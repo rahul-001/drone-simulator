@@ -1,9 +1,15 @@
-import { GoogleMap, Marker, Polyline } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  Marker,
+  Polyline,
+  LoadScript,
+} from "@react-google-maps/api";
 import React, { useEffect, useState } from "react";
 import TakeUserInput from "./userInput";
 
-const data = [
-];
+export const apiKey = import.meta.env.VITE_APP_GOOGLE_API_KEY;
+
+const data = [];
 
 const DromeSimulator = () => {
   const [path, setPath] = useState(data);
@@ -49,29 +55,34 @@ const DromeSimulator = () => {
     setPolylinePath(polylinePath);
   }, [path.length]);
 
-
   return (
     <div className="flex flex-col justify-center items-center">
       <p className="text-xl font-semibold">Drone Simulator</p>
-      <TakeUserInput path={path} setPath={setPath} handlePlayPause={handlePlayPause} />
-      <GoogleMap
-        zoom={8}
-        center={{
-          lat: data[animationStep]?.lat || 10.99835602,
-          lng: data[animationStep]?.lng || 77.01502627,
-        }}
-        mapContainerStyle={{
-          height: "50vh",
-          width: "50vw",
-        }}
-      >
-        <Polyline
-          path={polylinePath}
-          options={{ strokeColor: "#FF0000" }}
-          onLoad={onLoad}
-        />
-        <Marker position={markerPosition} />
-      </GoogleMap>
+      <TakeUserInput
+        path={path}
+        setPath={setPath}
+        handlePlayPause={handlePlayPause}
+      />
+      <LoadScript googleMapsApiKey={apiKey}>
+        <GoogleMap
+          zoom={8}
+          center={{
+            lat: data[animationStep]?.lat || 10.99835602,
+            lng: data[animationStep]?.lng || 77.01502627,
+          }}
+          mapContainerStyle={{
+            height: "50vh",
+            width: "50vw",
+          }}
+        >
+          <Polyline
+            path={polylinePath}
+            options={{ strokeColor: "#FF0000" }}
+            onLoad={onLoad}
+          />
+          <Marker position={markerPosition} />
+        </GoogleMap>
+      </LoadScript>
       <button onClick={handlePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
     </div>
   );
